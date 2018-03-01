@@ -1,15 +1,35 @@
-const foo = () => {
-  console.log("HEY!");
-  const div = elementCreator.getDiv("a", "b", "c");
-  document.activeElement.parentNode.appendChild(div);
+const id = "___auto_completor___";
+
+const getAutoCompletionBox = () => {
+  const box = document.getElementById(id);
+  return {
+    create: () => {
+      if (box) {
+        box.style.display = "";
+      } else {
+        const div = elementCreator.getDiv("a", "b", "c");
+        document.activeElement.parentNode.appendChild(div);
+      }
+    },
+    hide: () => {
+      if (box) box.style.display = "none";
+    }
+  };
 };
 
-const autoCompletionDetector = AutoCompletionDetector(foo);
+const keyActions = KeyActions({
+  autoCompletion: () => {
+    getAutoCompletionBox().create();
+  },
+  scape: () => {
+    getAutoCompletionBox().hide();
+  }
+});
 const elementCreator = ElementCreator();
 
 window.onkeydown = e => {
   var code = e.keyCode ? e.keyCode : e.which;
-  autoCompletionDetector.read(code);
+  keyActions.read(code);
 };
 
 function ElementCreator() {
@@ -23,7 +43,7 @@ function ElementCreator() {
     getDiv: (...items) => {
       console.log(items);
       const element = htmlToElement(
-        "<div><ul>" +
+        `<div id="${id}"><ul>` +
           items.reduce((acc, item) => acc + `<li>${item}</li>`, "") +
           "</ul></div>"
       );
@@ -35,19 +55,26 @@ function ElementCreator() {
   };
 }
 
-function AutoCompletionDetector(cb) {
+function KeyActions(
+  { autoCompletion, scape } = { autoCompletion: () => {}, scape: () => {} }
+) {
   let expectingSpace = false;
   const CTR_KEY = 17;
+  const ESC_KEY = 27;
   const SPACE_KEY = 32;
 
   return {
     read: code => {
+      if (code == ESC_KEY) {
+        expectingSpace = false;
+        scape();
+      }
       if (code === CTR_KEY) {
         expectingSpace = true;
       } else if (code === SPACE_KEY) {
         if (expectingSpace) {
           expectingSpace = false;
-          cb();
+          autoCompletion();
         }
       } else {
         expectingSpace = false;
