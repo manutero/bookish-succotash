@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 const boxClassName = "___auto_completor___";
 const hidenClassName = "___hiden___";
 const markedClassName = "___marked___";
@@ -94,19 +94,21 @@ function AutoCompletionBox() {
     box.children[0].children[i].classList.remove(markedClassName);
   };
 
-  const markItem = (box, i) => {
+  const markItem = (box, i = index.current()) => {
     box.children[0].children[i].classList.add(markedClassName);
   };
 
   return {
     display: () => {
-      const box = getBox();
+      let box = getBox();
       if (box) {
         box.classList.remove(hidenClassName);
       } else {
         const div = create("a", "b", "c", "d");
         document.activeElement.parentNode.appendChild(div);
+        box = getBox();
       }
+      markItem(box);
     },
     hide: () => {
       const box = getBox();
