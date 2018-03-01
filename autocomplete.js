@@ -43,6 +43,23 @@ window.onkeydown = e => {
   keyActions.read(code);
 };
 
+function Index(max) {
+  let i = 0;
+  return {
+    current: () => i,
+    prev: () => {
+      i--;
+      if (i < 0) i = max;
+      return i;
+    },
+    next: () => {
+      i++;
+      if (i > max) i = 0;
+      return i;
+    }
+  };
+}
+
 function AutoCompletionBox() {
   const htmlToElement = html => {
     var template = document.createElement("template");
