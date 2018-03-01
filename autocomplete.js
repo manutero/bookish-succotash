@@ -87,6 +87,7 @@ function AutoCompletionBox() {
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
 
   let index;
+  let input;
 
   let selectedItem = -1;
   const anyItemSelected = () => {
@@ -120,7 +121,8 @@ function AutoCompletionBox() {
       "interactorExtractorFactory",
       "myElement"
     );
-    document.activeElement.parentNode.appendChild(div);
+    input = document.activeElement;
+    input.parentNode.appendChild(div);
     return getBox();
   };
 
@@ -134,8 +136,7 @@ function AutoCompletionBox() {
       }
       markItem(box);
     },
-    hide: () => {
-      const box = getBox();
+    hide: (box = getBox()) => {
       if (box) box.classList.add(hidenClassName);
     },
     up: () => {
@@ -152,6 +153,16 @@ function AutoCompletionBox() {
       if (box) {
         unMarkItem(box);
         markItem(box, index.next());
+      }
+    },
+    enter: () => {
+      const box = getBox();
+      if (box) {
+        input.value =
+          input.value +
+          box.children[0].children[index.current()].textContent +
+          " ";
+        this.hide(box);
       }
     }
   };
