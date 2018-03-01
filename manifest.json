@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.mozilla.org/*"],
-      "js": ["main.js"]
+      "js": ["main.js", "autocomplete.js"]
     }
   ]
 }
