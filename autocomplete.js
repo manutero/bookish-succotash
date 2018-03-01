@@ -1,56 +1,56 @@
-const id = "___auto_completor___";
-
-const getAutoCompletionBox = () => {
-  const box = document.getElementById(id);
-  return {
-    create: () => {
-      if (box) {
-        box.style.display = "";
-      } else {
-        const div = elementCreator.getDiv("a", "b", "c");
-        document.activeElement.parentNode.appendChild(div);
-      }
-    },
-    hide: () => {
-      if (box) box.style.display = "none";
-    }
-  };
-};
-
 const keyActions = KeyActions({
   autoCompletion: () => {
-    getAutoCompletionBox().create();
+    getAutoCompletionBox().display();
   },
   scape: () => {
     getAutoCompletionBox().hide();
   }
 });
-const elementCreator = ElementCreator();
 
 window.onkeydown = e => {
   var code = e.keyCode ? e.keyCode : e.which;
   keyActions.read(code);
 };
 
-function ElementCreator() {
+function getAutoCompletionBox() {
+  const id = "___auto_completor___";
+
   const htmlToElement = html => {
     var template = document.createElement("template");
     html = html.trim();
     template.innerHTML = html;
     return template.content.firstChild;
   };
+
+  const addStyleTo = element => {
+    element.style.position = "absolute";
+    element.style.zIndex = 999;
+    element.style.background = "red";
+  };
+
+  const box = document.getElementById(id);
+
+  const create = (...items) => {
+    const element = htmlToElement(
+      `<div id="${id}"><ul>` +
+        items.reduce((acc, item) => acc + `<li>${item}</li>`, "") +
+        "</ul></div>"
+    );
+    addStyleTo(element);
+    return element;
+  };
+
   return {
-    getDiv: (...items) => {
-      console.log(items);
-      const element = htmlToElement(
-        `<div id="${id}"><ul>` +
-          items.reduce((acc, item) => acc + `<li>${item}</li>`, "") +
-          "</ul></div>"
-      );
-      element.style.position = "absolute";
-      element.style.zIndex = 999;
-      element.style.background = "red";
-      return element;
+    display: () => {
+      if (box) {
+        box.style.display = "";
+      } else {
+        const div = create("a", "b", "c");
+        document.activeElement.parentNode.appendChild(div);
+      }
+    },
+    hide: () => {
+      if (box) box.style.display = "none";
     }
   };
 }
@@ -65,19 +65,22 @@ function KeyActions(
 
   return {
     read: code => {
-      if (code == ESC_KEY) {
-        expectingSpace = false;
-        scape();
-      }
-      if (code === CTR_KEY) {
-        expectingSpace = true;
-      } else if (code === SPACE_KEY) {
-        if (expectingSpace) {
+      switch (code) {
+        case ESC_KEY:
           expectingSpace = false;
-          autoCompletion();
-        }
-      } else {
-        expectingSpace = false;
+          scape();
+          break;
+        case CTR_KEY:
+          expectingSpace = true;
+          break;
+        case SPACE_KEY:
+          if (expectingSpace) {
+            expectingSpace = false;
+            autoCompletion();
+            break;
+          }
+        default:
+          expectingSpace = false;
       }
     }
   };
