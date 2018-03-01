@@ -162,7 +162,7 @@ function AutoCompletionBox() {
           input.value +
           box.children[0].children[index.current()].textContent +
           " ";
-        this.hide(box);
+        box.classList.add(hidenClassName);
       }
     }
   };
