@@ -5,16 +5,30 @@ const markedClassName = "___marked___";
 
 window.onload = () => {
   addStyleToPage(`
-    .${boxClassName} {
+  .${boxClassName} {
+      font-family: monospace;
+      font-size: 13px;
       position: absolute;
       z-index: 999;
-      background: red;
+      background: #FAFAFA;
+      box-shadow: 0px 2px 10px #9E9E9E;
+      border: 1px solid #BDBDBD;
     }
-    .${hidenClassName} {
+    .${boxClassName} ul {
+        margin: 0;
+        padding: 0;
+    }
+    .${boxClassName} li {
+        color: #424242;
+        padding: 4px 8px;
+        transition: all 0.2s ease-out;
+    }
+    .${boxClassName}.${hidenClassName} {
       display: none;
     }
-    .${markedClassName} {
-        background: blue;
+    .${boxClassName} li.${markedClassName} {
+        color: #000000;
+        background: #BDBDBD;
     }
 `);
 };
@@ -40,6 +54,7 @@ const keyActions = KeyActions({
 });
 
 window.onkeydown = e => {
+  e.preventDefault();
   var code = e.keyCode ? e.keyCode : e.which;
   keyActions.read(code);
 };
@@ -98,15 +113,24 @@ function AutoCompletionBox() {
     box.children[0].children[i].classList.add(markedClassName);
   };
 
+  const createBox = () => {
+    const div = create(
+      "createListElements",
+      "fooExtraLarge",
+      "interactorExtractorFactory",
+      "myElement"
+    );
+    document.activeElement.parentNode.appendChild(div);
+    return getBox();
+  };
+
   return {
     display: () => {
       let box = getBox();
       if (box) {
         box.classList.remove(hidenClassName);
       } else {
-        const div = create("a", "b", "c", "d");
-        document.activeElement.parentNode.appendChild(div);
-        box = getBox();
+        box = createBox();
       }
       markItem(box);
     },
