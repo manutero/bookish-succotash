@@ -1,3 +1,4 @@
+const debug = true;
 const boxClassName = "___auto_completor___";
 const hidenClassName = "___hiden___";
 const markedClassName = "___marked___";
@@ -70,6 +71,8 @@ function AutoCompletionBox() {
 
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
 
+  let index;
+
   let selectedItem = -1;
   const anyItemSelected = () => {
     return (
@@ -78,63 +81,51 @@ function AutoCompletionBox() {
   };
 
   const create = (...items) => {
+    index = Index(items.length - 1);
     const element = htmlToElement(
       `<div class="${boxClassName}"><ul>` +
         items.reduce((acc, item) => acc + `<li>${item}</li>`, "") +
         "</ul></div>"
     );
-
     return element;
   };
 
-  const unMarkItem = () => {
-    if (anyItemSelected()) {
-      getBox().children[0].children[selectedItem].classList.remove(
-        markedClassName
-      );
-    }
+  const unMarkItem = (box, i = index.current()) => {
+    box.children[0].children[i].classList.remove(markedClassName);
   };
 
-  const markItem = () => {
-    if (anyItemSelected()) {
-      getBox().children[0].children[selectedItem].classList.add(
-        markedClassName
-      );
-    }
+  const markItem = (box, i) => {
+    box.children[0].children[i].classList.add(markedClassName);
   };
 
   return {
     display: () => {
       const box = getBox();
       if (box) {
-        getBox().classList.remove(hidenClassName);
+        box.classList.remove(hidenClassName);
       } else {
-        const div = create("a", "b", "c");
+        const div = create("a", "b", "c", "d");
         document.activeElement.parentNode.appendChild(div);
       }
     },
     hide: () => {
       const box = getBox();
-      if (box) getBox().classList.add(hidenClassName);
+      if (box) box.classList.add(hidenClassName);
     },
     up: () => {
+      if (debug) console.log("autoCompletionBox.up()");
       const box = getBox();
       if (box) {
-        if (selectedItem !== -1) {
-          unMarkItem();
-          selectedItem--;
-          markItem();
-        }
+        unMarkItem(box);
+        markItem(box, index.prev());
       }
     },
     down: () => {
+      if (debug) console.log("autoCompletionBox.down()");
       const box = getBox();
       if (box) {
-        if (selectedItem !== box.children[0].children.length) {
-          unMarkItem();
-          selectedItem++;
-          markItem();
-        }
+        unMarkItem(box);
+        markItem(box, index.next());
       }
     }
   };
