@@ -26,7 +26,7 @@ function KeyActions({ autoCompletion, up, down, enter, scape, letter }) {
         return;
       }
 
-      if (mustPreventDefault) {
+      if (!isAlphaNumeric && mustPreventDefault) {
         event.preventDefault();
       }
 
