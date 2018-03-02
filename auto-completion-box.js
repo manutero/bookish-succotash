@@ -69,9 +69,15 @@ function AutoCompletionBox() {
     box.children[0].children[i].classList.add(markedClassName);
   };
 
+  const removeBox = () => {
+    console.log("REMOVING BOX");
+    document.getElementsByClassName(boxClassName)[0].innerHTML = "";
+  };
+
   const createBox = () => {
     const currentSentence = document.activeElement.value.split(" ");
     const currentLastWord = currentSentence[currentSentence.length - 1];
+    console.log(`CREATING BOX [currentLastWord: ${currentLastWord}]`);
     const div = create(
       wordsCollector.getCurrentWords(currentLastWord),
       currentLastWord
@@ -121,6 +127,7 @@ function AutoCompletionBox() {
       console.log("autoCompletionBox.letter()");
       let box = getBox();
       if (box) {
+        // TODO
       }
     },
     enter: () => {
