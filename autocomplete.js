@@ -37,9 +37,7 @@ const keyActions = KeyActions({
 });
 
 window.onkeydown = e => {
-  e.preventDefault();
-  var code = e.keyCode ? e.keyCode : e.which;
-  keyActions.read(code);
+  keyActions.read(e);
 };
 
 window.onload = () => {

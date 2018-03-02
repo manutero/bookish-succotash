@@ -7,6 +7,7 @@ function AutoCompletionBox() {
   };
 
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
+  let showingBox = false;
 
   const Index = max => {
     let i = 0;
@@ -34,6 +35,28 @@ function AutoCompletionBox() {
       selectedItem >= 0 && selectedItem < getBox().children[0].children.length
     );
   };
+
+  function simulateEnter() {
+    var keyboardEvent = document.createEvent("KeyboardEvent");
+    var initMethod =
+      typeof keyboardEvent.initKeyboardEvent !== "undefined"
+        ? "initKeyboardEvent"
+        : "initKeyEvent";
+
+    keyboardEvent[initMethod](
+      "keydown", // event type : keydown, keyup, keypress
+      true, // bubbles
+      true, // cancelable
+      window, // viewArg: should be window
+      false, // ctrlKeyArg
+      false, // altKeyArg
+      false, // shiftKeyArg
+      false, // metaKeyArg
+      40, // keyCodeArg : unsigned long the virtual key code, else 0
+      0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
+    );
+    document.dispatchEvent(keyboardEvent);
+  }
 
   const create = (...items) => {
     index = Index(items.length - 1);
@@ -67,19 +90,23 @@ function AutoCompletionBox() {
 
   return {
     display: () => {
+      console.log("autoCompletionBox.display()");
       let box = getBox();
       if (box) {
         box.classList.remove(hidenClassName);
       } else {
         box = createBox();
       }
+      showingBox = true;
       markItem(box);
     },
     hide: (box = getBox()) => {
+      console.log("autoCompletionBox.hide()");
+      showingBox = false;
       if (box) box.classList.add(hidenClassName);
     },
     up: () => {
-      if (debug) console.log("autoCompletionBox.up()");
+      console.log("autoCompletionBox.up()");
       const box = getBox();
       if (box) {
         unMarkItem(box);
@@ -87,7 +114,7 @@ function AutoCompletionBox() {
       }
     },
     down: () => {
-      if (debug) console.log("autoCompletionBox.down()");
+      console.log("autoCompletionBox.down()");
       const box = getBox();
       if (box) {
         unMarkItem(box);
@@ -95,6 +122,11 @@ function AutoCompletionBox() {
       }
     },
     enter: () => {
+      console.log("autoCompletionBox.enter()");
+      if (!showingBox) {
+        return;
+        // simulate real enter
+      }
       const box = getBox();
       if (box) {
         input.value =
@@ -102,6 +134,7 @@ function AutoCompletionBox() {
           box.children[0].children[index.current()].textContent +
           " ";
         box.classList.add(hidenClassName);
+        showingBox = false;
       }
     }
   };
