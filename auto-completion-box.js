@@ -1,12 +1,6 @@
 function AutoCompletionBox() {
-  const htmlToElement = html => {
-    var template = document.createElement("template");
-    html = html.trim();
-    template.innerHTML = html;
-    return template.content.firstChild;
-  };
-
   const wordsCollector = WordsCollector();
+  const domElementCreator = DomElementCreator();
 
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
 
@@ -22,16 +16,6 @@ function AutoCompletionBox() {
     box.children[0].children[i].classList.add(markedClassName);
   };
 
-  const goo = (str, highlightStr) => {
-    if (!highlightStr) return str;
-    const indexOfHighlight = str.indexOf(highlightStr);
-    return (
-      str.substring(0, indexOfHighlight) +
-      `<span>${highlightStr}</span>` +
-      str.substring(indexOfHighlight + highlightStr.length)
-    );
-  };
-
   const removeBox = () => {
     console.log("REMOVING BOX");
     document.getElementsByClassName(boxClassName)[0].innerHTML = "";
@@ -40,17 +24,11 @@ function AutoCompletionBox() {
   const createBox = () => {
     const currentSentence = document.activeElement.value.split(" ");
     const highlightStr = currentSentence[currentSentence.length - 1];
-    console.log(`CREATING BOX [currentLastWord: ${highlightStr}]`);
+    console.log(`CREATING BOX [highlightStr: ${highlightStr}]`);
+
     const items = wordsCollector.getCurrentWords(highlightStr);
     index = IndexPointer(items.length - 1);
-    const div = htmlToElement(
-      `<div class="${boxClassName}"><ul>` +
-        items.reduce(
-          (acc, item) => acc + `<li>${goo(item, highlightStr)}</li>`,
-          ""
-        ) +
-        "</ul></div>"
-    );
+    const div = domElementCreator.createDiv(items, highlightStr);
     input = document.activeElement;
     input.parentNode.appendChild(div);
     return getBox();

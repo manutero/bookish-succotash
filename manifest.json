@@ -17,6 +17,7 @@
         "style-sheet.js",
         "index-pointer.js",
         "words-collector.js",
+        "dom-element-creator.js",
         "auto-completion-box.js",
         "key-actions.js",
         "autocomplete.js"

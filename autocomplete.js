@@ -1,5 +1,3 @@
-const debug = false;
-
 const autoCompletionBox = AutoCompletionBox();
 
 const keyActions = KeyActions({
