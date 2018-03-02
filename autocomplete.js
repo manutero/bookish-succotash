@@ -37,7 +37,7 @@ const keyActions = KeyActions({
 });
 
 window.onkeydown = e => {
-  keyActions.read(e);
+  keyActions.read(e, { mustPreventDefault: autoCompletionBox.isDisplaying() });
 };
 
 window.onload = () => {

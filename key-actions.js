@@ -11,12 +11,14 @@ function KeyActions({ autoCompletion, up, down, enter, scape }) {
     ENTER_KEY: 13
   };
   return {
-    read: e => {
+    read: (e, { mustPreventDefault }) => {
       const code = e.keyCode ? e.keyCode : e.which;
       if (Object.values(keys).indexOf(code) < 0) {
         return;
       }
-      e.preventDefault();
+      if (mustPreventDefault) {
+        e.preventDefault();
+      }
       switch (code) {
         case keys.UP_KEY:
           expectingSpace = false;
