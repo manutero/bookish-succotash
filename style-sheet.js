@@ -23,6 +23,9 @@ function stlyeSheet() {
           padding: 4px 8px;
           transition: all 0.2s ease-out;
       }
+      .${boxClassName} li span {
+        color: blue;
+      }
       .${boxClassName}.${hidenClassName} {
         display: none;
       }

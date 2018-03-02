@@ -38,11 +38,24 @@ function AutoCompletionBox() {
     );
   };
 
-  const create = (items = []) => {
+  const goo = (str, highlightStr) => {
+    if (!highlightStr) return str;
+    const indexOfHighlight = str.indexOf(highlightStr);
+    return (
+      str.substring(0, indexOfHighlight) +
+      `<span>${highlightStr}</span>` +
+      str.substring(indexOfHighlight + highlightStr.length)
+    );
+  };
+
+  const create = (items = [], highlightStr = "") => {
     index = Index(items.length - 1);
     const element = htmlToElement(
       `<div class="${boxClassName}"><ul>` +
-        items.reduce((acc, item) => acc + `<li>${item}</li>`, "") +
+        items.reduce(
+          (acc, item) => acc + `<li>${goo(item, highlightStr)}</li>`,
+          ""
+        ) +
         "</ul></div>"
     );
     return element;
@@ -59,7 +72,10 @@ function AutoCompletionBox() {
   const createBox = () => {
     const currentSentence = document.activeElement.value.split(" ");
     const currentLastWord = currentSentence[currentSentence.length - 1];
-    const div = create(wordsCollector.getCurrentWords(currentLastWord));
+    const div = create(
+      wordsCollector.getCurrentWords(currentLastWord),
+      currentLastWord
+    );
     input = document.activeElement;
     input.parentNode.appendChild(div);
     return getBox();
