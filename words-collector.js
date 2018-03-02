@@ -1,6 +1,4 @@
 function WordsCollector() {
-  const set = new Set();
-
   const foo = (str, matchingWord) =>
     matchingWord ? str.indexOf(matchingWord) !== -1 : true;
 
@@ -13,6 +11,8 @@ function WordsCollector() {
     element.textContent.replace(/ |\n/g, "") !== "";
 
   const allTexts = matchingWord => {
+    console.log(`>>> ${matchingWord}`);
+    const set = new Set();
     const elements = document.body.getElementsByTagName("*");
     for (const element of elements) {
       if (elementHasNoChildrenAndNotEmpty(element)) {
@@ -23,8 +23,9 @@ function WordsCollector() {
         });
       }
     }
-    console.log(set);
-    return Array.from(set);
+    const list = Array.from(set);
+    console.log(`<<< ${list}`);
+    return list;
   };
 
   return {
