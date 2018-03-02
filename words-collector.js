@@ -1,18 +1,23 @@
 function WordsCollector() {
   const set = new Set();
 
-  const isValid = str => str.length > 3 && /^[a-zA-Z]+$/.test(str);
+  const foo = (str, matchingWord) =>
+    matchingWord ? str.indexOf(matchingWord) !== -1 : true;
+
+  const isValid = (str, matchingWord) => {
+    return foo(str, matchingWord) && str.length > 3 && /^[a-zA-Z]+$/.test(str);
+  };
 
   const elementHasNoChildrenAndNotEmpty = element =>
     element.children.length === 0 &&
     element.textContent.replace(/ |\n/g, "") !== "";
 
-  const allTexts = () => {
+  const allTexts = matchingWord => {
     const elements = document.body.getElementsByTagName("*");
-    for (const current of elements) {
-      if (elementHasNoChildrenAndNotEmpty(current)) {
-        current.textContent.split(" ").forEach(str => {
-          if (isValid(str)) {
+    for (const element of elements) {
+      if (elementHasNoChildrenAndNotEmpty(element)) {
+        element.textContent.split(" ").forEach(str => {
+          if (isValid(str, matchingWord)) {
             set.add(str);
           }
         });
@@ -23,6 +28,7 @@ function WordsCollector() {
   };
 
   return {
-    getCurrentWords: (n = 5) => allTexts().slice(0, n)
+    getCurrentWords: (matchingWord = "", n = 5) =>
+      allTexts(matchingWord).slice(0, n)
   };
 }

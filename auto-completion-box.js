@@ -57,7 +57,9 @@ function AutoCompletionBox() {
   };
 
   const createBox = () => {
-    const div = create(wordsCollector.getCurrentWords());
+    const currentSentence = document.activeElement.value.split(" ");
+    const currentLastWord = currentSentence[currentSentence.length - 1];
+    const div = create(wordsCollector.getCurrentWords(currentLastWord));
     input = document.activeElement;
     input.parentNode.appendChild(div);
     return getBox();
