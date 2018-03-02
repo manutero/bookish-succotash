@@ -9,16 +9,17 @@ function AutoCompletionBox() {
   const wordsCollector = WordsCollector();
 
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
-  let showingBox = false;
 
+  let showingBox = false;
   let index;
   let input;
 
-  let selectedItem = -1;
-  const anyItemSelected = () => {
-    return (
-      selectedItem >= 0 && selectedItem < getBox().children[0].children.length
-    );
+  const unMarkItem = (box, i = index.current()) => {
+    box.children[0].children[i].classList.remove(markedClassName);
+  };
+
+  const markItem = (box, i = index.current()) => {
+    box.children[0].children[i].classList.add(markedClassName);
   };
 
   const goo = (str, highlightStr) => {
@@ -31,27 +32,6 @@ function AutoCompletionBox() {
     );
   };
 
-  const create = (items = [], highlightStr = "") => {
-    index = IndexPointer(items.length - 1);
-    const element = htmlToElement(
-      `<div class="${boxClassName}"><ul>` +
-        items.reduce(
-          (acc, item) => acc + `<li>${goo(item, highlightStr)}</li>`,
-          ""
-        ) +
-        "</ul></div>"
-    );
-    return element;
-  };
-
-  const unMarkItem = (box, i = index.current()) => {
-    box.children[0].children[i].classList.remove(markedClassName);
-  };
-
-  const markItem = (box, i = index.current()) => {
-    box.children[0].children[i].classList.add(markedClassName);
-  };
-
   const removeBox = () => {
     console.log("REMOVING BOX");
     document.getElementsByClassName(boxClassName)[0].innerHTML = "";
@@ -59,74 +39,94 @@ function AutoCompletionBox() {
 
   const createBox = () => {
     const currentSentence = document.activeElement.value.split(" ");
-    const currentLastWord = currentSentence[currentSentence.length - 1];
-    console.log(`CREATING BOX [currentLastWord: ${currentLastWord}]`);
-    const div = create(
-      wordsCollector.getCurrentWords(currentLastWord),
-      currentLastWord
+    const highlightStr = currentSentence[currentSentence.length - 1];
+    console.log(`CREATING BOX [currentLastWord: ${highlightStr}]`);
+    const items = wordsCollector.getCurrentWords(highlightStr);
+    index = IndexPointer(items.length - 1);
+    const div = htmlToElement(
+      `<div class="${boxClassName}"><ul>` +
+        items.reduce(
+          (acc, item) => acc + `<li>${goo(item, highlightStr)}</li>`,
+          ""
+        ) +
+        "</ul></div>"
     );
     input = document.activeElement;
     input.parentNode.appendChild(div);
     return getBox();
   };
 
-  return {
-    isDisplaying: () => {
-      return showingBox;
-    },
-    display: () => {
-      console.log("autoCompletionBox.display()");
-      let box = getBox();
-      if (box) {
-        box.classList.remove(hidenClassName);
-      } else {
-        box = createBox();
-      }
-      showingBox = true;
-      markItem(box);
-    },
-    hide: (box = getBox()) => {
-      console.log("autoCompletionBox.hide()");
-      showingBox = false;
-      if (box) box.classList.add(hidenClassName);
-    },
-    up: () => {
-      console.log("autoCompletionBox.up()");
-      const box = getBox();
-      if (box) {
-        unMarkItem(box);
-        markItem(box, index.prev());
-      }
-    },
-    down: () => {
-      console.log("autoCompletionBox.down()");
-      const box = getBox();
-      if (box) {
-        unMarkItem(box);
-        markItem(box, index.next());
-      }
-    },
-    letter: () => {
-      console.log("autoCompletionBox.letter()");
-      let box = getBox();
-      if (box) {
-        // TODO
-      }
-    },
-    enter: () => {
-      console.log("autoCompletionBox.enter()");
-      if (!showingBox) {
-        return;
-      }
-      const box = getBox();
-      if (box) {
-        input.value =
-          input.value +
-          box.children[0].children[index.current()].textContent +
-          " ";
-        box.classList.add(hidenClassName);
-        showingBox = false;
-      }
+  const isDisplaying = () => {
+    return showingBox;
+  };
+
+  const display = () => {
+    console.log("autoCompletionBox.display()");
+    let box = getBox();
+    if (box) {
+      box.classList.remove(hidenClassName);
+    } else {
+      box = createBox();
     }
+    showingBox = true;
+    markItem(box);
+  };
+
+  const hide = (box = getBox()) => {
+    console.log("autoCompletionBox.hide()");
+    showingBox = false;
+    if (box) box.classList.add(hidenClassName);
+  };
+
+  const up = () => {
+    console.log("autoCompletionBox.up()");
+    const box = getBox();
+    if (box) {
+      unMarkItem(box);
+      markItem(box, index.prev());
+    }
+  };
+
+  const down = () => {
+    console.log("autoCompletionBox.down()");
+    const box = getBox();
+    if (box) {
+      unMarkItem(box);
+      markItem(box, index.next());
+    }
+  };
+
+  const letter = () => {
+    console.log("autoCompletionBox.letter()");
+    let box = getBox();
+    if (box) {
+      // TODO
+    }
+  };
+
+  const enter = () => {
+    console.log("autoCompletionBox.enter()");
+    if (!showingBox) {
+      return;
+    }
+    const box = getBox();
+    if (box) {
+      input.value =
+        input.value +
+        box.children[0].children[index.current()].textContent +
+        " ";
+      box.classList.add(hidenClassName);
+      showingBox = false;
+    }
+  };
+
+  return {
+    isDisplaying,
+    display,
+    hide,
+    up,
+    down,
+    letter,
+    enter
   };
 }
