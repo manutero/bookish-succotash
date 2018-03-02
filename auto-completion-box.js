@@ -117,11 +117,16 @@ function AutoCompletionBox() {
         markItem(box, index.next());
       }
     },
+    letter: () => {
+      console.log("autoCompletionBox.letter()");
+      let box = getBox();
+      if (box) {
+      }
+    },
     enter: () => {
       console.log("autoCompletionBox.enter()");
       if (!showingBox) {
         return;
-        // simulate real enter
       }
       const box = getBox();
       if (box) {

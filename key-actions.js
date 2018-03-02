@@ -1,5 +1,12 @@
-function KeyActions({ autoCompletion, up, down, enter, scape }) {
+function KeyActions({ autoCompletion, up, down, enter, scape, letter }) {
   let expectingSpace = false;
+  const isLetter = keyCode => {
+    return (
+      (keyCode >= 48 && keyCode <= 57) ||
+      (keyCode >= 65 && keyCode <= 90) ||
+      (keyCode >= 97 && keyCode <= 122)
+    );
+  };
   const keys = {
     CTR_KEY: 17,
     ESC_KEY: 27,
@@ -11,15 +18,23 @@ function KeyActions({ autoCompletion, up, down, enter, scape }) {
     ENTER_KEY: 13
   };
   return {
-    read: (e, { mustPreventDefault }) => {
-      const code = e.keyCode ? e.keyCode : e.which;
-      if (Object.values(keys).indexOf(code) < 0) {
+    read: (event, { mustPreventDefault }) => {
+      const keyCode = event.keyCode ? event.keyCode : event.which;
+      const isAlphaNumeric = isLetter(keyCode);
+
+      if (Object.values(keys).indexOf(keyCode) < 0 && !isAlphaNumeric) {
         return;
       }
+
       if (mustPreventDefault) {
-        e.preventDefault();
+        event.preventDefault();
       }
-      switch (code) {
+
+      if (isAlphaNumeric) {
+        return letter();
+      }
+
+      switch (keyCode) {
         case keys.UP_KEY:
           expectingSpace = false;
           up();

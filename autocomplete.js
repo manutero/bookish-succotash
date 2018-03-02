@@ -17,6 +17,9 @@ const keyActions = KeyActions({
   },
   enter: () => {
     autoCompletionBox.enter();
+  },
+  letter: () => {
+    autoCompletionBox.letter();
   }
 });
 
