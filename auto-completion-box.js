@@ -11,23 +11,6 @@ function AutoCompletionBox() {
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
   let showingBox = false;
 
-  const Index = max => {
-    let i = 0;
-    return {
-      current: () => i,
-      prev: () => {
-        i--;
-        if (i < 0) i = max;
-        return i;
-      },
-      next: () => {
-        i++;
-        if (i > max) i = 0;
-        return i;
-      }
-    };
-  };
-
   let index;
   let input;
 
@@ -49,7 +32,7 @@ function AutoCompletionBox() {
   };
 
   const create = (items = [], highlightStr = "") => {
-    index = Index(items.length - 1);
+    index = IndexPointer(items.length - 1);
     const element = htmlToElement(
       `<div class="${boxClassName}"><ul>` +
         items.reduce(
