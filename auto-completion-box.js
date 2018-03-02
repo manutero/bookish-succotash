@@ -6,6 +6,8 @@ function AutoCompletionBox() {
     return template.content.firstChild;
   };
 
+  const wordsCollector = WordsCollector();
+
   const getBox = () => document.getElementsByClassName(boxClassName)[0];
   let showingBox = false;
 
@@ -36,7 +38,7 @@ function AutoCompletionBox() {
     );
   };
 
-  const create = (...items) => {
+  const create = (items = []) => {
     index = Index(items.length - 1);
     const element = htmlToElement(
       `<div class="${boxClassName}"><ul>` +
@@ -55,12 +57,7 @@ function AutoCompletionBox() {
   };
 
   const createBox = () => {
-    const div = create(
-      "createListElements",
-      "fooExtraLarge",
-      "interactorExtractorFactory",
-      "myElement"
-    );
+    const div = create(wordsCollector.getCurrentWords());
     input = document.activeElement;
     input.parentNode.appendChild(div);
     return getBox();

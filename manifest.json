@@ -15,6 +15,7 @@
       "js": [
         "red-line.js",
         "style-sheet.js",
+        "words-collector.js",
         "auto-completion-box.js",
         "key-actions.js",
         "autocomplete.js"
