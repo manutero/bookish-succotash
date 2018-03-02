@@ -111,8 +111,10 @@ function AutoCompletionBox() {
     }
     const box = getBox();
     if (box) {
+      const indexLastWord = input.value.lastIndexOf(" ");
       input.value =
-        input.value +
+        input.value.substring(0, indexLastWord) +
+        " " +
         box.children[0].children[index.current()].textContent +
         " ";
       box.classList.add(hidenClassName);
