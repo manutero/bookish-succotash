@@ -14,6 +14,7 @@ function stlyeSheet() {
         border: 1px solid #BDBDBD;
       }
       .${boxClassName} ul {
+          list-style:none;
           margin: 0;
           padding: 0;
       }
